@@ -19,11 +19,15 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 SRC = HERE / "poster.png"
 DST = Path("/output/entry.png")
+PNG_MAGIC = b"\x89PNG\r\n\x1a\n"
 
 
 def main() -> None:
     DST.parent.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(SRC, DST)
+    # sanity check: the copied file must be a whole PNG
+    if DST.read_bytes()[:8] != PNG_MAGIC:
+        raise SystemExit("entry.png is not a PNG")
 
 
 if __name__ == "__main__":
